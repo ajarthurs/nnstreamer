@@ -599,7 +599,7 @@ gst_tensor_filter_transform (GstBaseTransform * trans,
   GstMapInfo out_info[NNS_TENSOR_SIZE_LIMIT];
   GstTensorMemory in_tensors[NNS_TENSOR_SIZE_LIMIT];
   GstTensorMemory out_tensors[NNS_TENSOR_SIZE_LIMIT];
-  guint i;
+  guint i,j;
   gint ret;
 
   self = GST_TENSOR_FILTER_CAST (trans);
@@ -668,6 +668,25 @@ gst_tensor_filter_transform (GstBaseTransform * trans,
           self->fw->destroyNotify ? self->fw->destroyNotify : g_free);
     } else {
       gst_memory_unmap (out_mem[i], &out_info[i]);
+    }
+
+    if(out_tensors[i].detections) {
+      g_message("GOT %d DETECTIONS!", (int)out_tensors[i].num_detections);
+      for(j=0; j < out_tensors[i].num_detections; j++) {
+	DetectedObject *detection = &out_tensors[i].detections[j];
+	g_message("      '%s': (%d, %d)", detection->class_label, detection->x, detection->y);
+	gst_buffer_add_video_region_of_interest_meta(
+	    outbuf,
+	    detection->class_label,
+	    detection->x,
+	    detection->y,
+	    detection->width,
+	    detection->height
+	    );
+      }
+      free(out_tensors[i].detections);
+      out_tensors[i].detections = NULL;
+      out_tensors[i].num_detections = 0;
     }
 
     /* append the memory block to outbuf */
