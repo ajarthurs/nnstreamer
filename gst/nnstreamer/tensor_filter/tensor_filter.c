@@ -56,6 +56,7 @@
 
 #include <gst/gstinfo.h>
 #include <gst/gst.h>
+#include <gst/video/gstvideometa.h>
 #include <glib.h>
 #include <string.h>
 

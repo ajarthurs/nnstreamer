@@ -132,6 +132,20 @@ typedef union {
 
 typedef uint32_t tensor_dim[NNS_TENSOR_RANK_LIMIT];
 
+
+
+typedef struct
+{
+  int x;
+  int y;
+  int width;
+  int height;
+  int class_id;
+  char *class_label;
+  float prob;
+} DetectedObject;
+
+
 /**
  * @brief The unit of each data tensors. It will be used as an input/output tensor of other/tensors.
  */
@@ -140,6 +154,8 @@ typedef struct
   void *data;
   size_t size;
   tensor_type type;
+  size_t num_detections;
+  DetectedObject *detections;
 } GstTensorMemory;
 
 /**

@@ -37,6 +37,32 @@
 #include "tflite/ext/nnapi_delegate.h"
 #endif
 
+
+
+#define Y_SCALE         10.0f
+#define X_SCALE         10.0f
+#define H_SCALE         5.0f
+#define W_SCALE         5.0f
+#define VIDEO_WIDTH     640
+#define VIDEO_HEIGHT    480
+#define MODEL_WIDTH     300
+#define MODEL_HEIGHT    300
+#define DETECTION_MAX   1917
+#define BOX_SIZE        4
+#define LABEL_SIZE      91
+const gchar tflite_label[] = "coco_labels_list.txt";
+const gchar tflite_box_priors[] = "box_priors-ssd_mobilenet.txt";
+typedef struct
+{
+  const gchar *model_path; /**< tflite model file path */
+  gchar *label_path; /**< label file path */
+  gchar *box_prior_path; /**< box prior file path */
+  gfloat box_priors[BOX_SIZE][DETECTION_MAX]; /**< box prior */
+  GList *labels; /**< list of loaded labels */
+} TFLiteModelInfo;
+
+
+
 /**
  * @brief	ring cache structure
  */
@@ -56,6 +82,8 @@ public:
   int invoke (const GstTensorMemory * input, GstTensorMemory * output);
 
 private:
+
+  TFLiteModelInfo tflite_info;
 
   const char *model_path;
   bool use_nnapi;
