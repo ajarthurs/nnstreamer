@@ -339,6 +339,7 @@ get_detected_objects (TFLiteModelInfo &tflite_info, gfloat * detections, gfloat 
 TFLiteCore::TFLiteCore (const char * _model_path, nnapi_hw hw)
 {
   model_path = _model_path;
+  tflite_info.model_path = _model_path;
   if(hw == NNAPI_UNKNOWN){
     use_nnapi = nnsconf_get_custom_value_bool ("tensorflowlite", "enable_nnapi", FALSE);
   } else {
@@ -370,6 +371,11 @@ TFLiteCore::~TFLiteCore ()
 int
 TFLiteCore::init ()
 {
+  if (!tflite_init_info (tflite_info, "tflite_model")) {
+    g_critical ("Failed to initialize TFLite info\n");
+    return -4;
+  }
+
   if (loadModel ()) {
     g_critical ("Failed to load model\n");
     return -1;

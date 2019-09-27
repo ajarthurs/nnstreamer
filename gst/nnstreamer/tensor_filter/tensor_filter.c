@@ -629,6 +629,8 @@ gst_tensor_filter_transform (GstBaseTransform * trans,
     in_tensors[i].data = in_info[i].data;
     in_tensors[i].size = in_info[i].size;
     in_tensors[i].type = prop->input_meta.info[i].type;
+    in_tensors[i].num_detections = 0;
+    in_tensors[i].detections = NULL;
   }
 
   /* 2. Prepare output tensors. */
@@ -639,6 +641,8 @@ gst_tensor_filter_transform (GstBaseTransform * trans,
     out_tensors[i].data = NULL;
     out_tensors[i].size = gst_tensor_filter_get_output_size (self, i);
     out_tensors[i].type = prop->output_meta.info[i].type;
+    out_tensors[i].num_detections = 0;
+    out_tensors[i].detections = NULL;
 
     /* allocate memory if allocate_in_invoke is FALSE */
     if (self->fw->allocate_in_invoke == FALSE) {
