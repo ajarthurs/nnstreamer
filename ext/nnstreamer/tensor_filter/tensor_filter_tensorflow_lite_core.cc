@@ -633,7 +633,7 @@ TFLiteCore::invoke (const GstTensorMemory * input, GstTensorMemory * output)
     tensor_ptr = interpreter->tensor (tensor_idx);
 
     g_assert (tensor_ptr->bytes == output[i].size);
-    tensor_ptr->data.raw = (char *) output[i].data;
+    tensor_ptr->data.f = (gfloat *) output[i].data;
     tensors_idx.push_back (tensor_idx);
   }
 
@@ -642,7 +642,7 @@ TFLiteCore::invoke (const GstTensorMemory * input, GstTensorMemory * output)
     tensor_ptr = interpreter->tensor (tensor_idx);
 
     g_assert (tensor_ptr->bytes == input[i].size);
-    tensor_ptr->data.raw = (char *) input[i].data;
+    tensor_ptr->data.f = (gfloat *) input[i].data;
     tensors_idx.push_back (tensor_idx);
   }
 
