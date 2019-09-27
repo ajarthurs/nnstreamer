@@ -677,6 +677,13 @@ TFLiteCore::invoke (const GstTensorMemory * input, GstTensorMemory * output)
       (stop_time - start_time));
 #endif
 
+  gfloat *boxes = (gfloat *)output[0].data;
+  gfloat *detections = (gfloat *)output[1].data;
+  std::vector<DetectedObject> detected;
+  get_detected_objects (tflite_info, detections, boxes, detected);
+  output[0].detections = (DetectedObject *)malloc (detected.size()*sizeof(DetectedObject));
+  output[0].num_detections = detected.size();
+  memcpy(output[0].detections, &detected[0], detected.size()*sizeof(DetectedObject));
   return 0;
 }
 
