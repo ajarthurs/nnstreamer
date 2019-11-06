@@ -62,6 +62,9 @@ TFLiteCore::TFLiteCore (const char * _model_path, nnapi_hw hw)
  */
 TFLiteCore::~TFLiteCore ()
 {
+#ifdef ENABLE_NCORE
+  tflite::tflite_plugin_destroy_delegate(ncore_delegate);
+#endif
   gst_tensors_info_free (&inputTensorMeta);
   gst_tensors_info_free (&outputTensorMeta);
 }
@@ -163,6 +166,12 @@ TFLiteCore::loadModel ()
       tensor_idx = interpreter->outputs ()[i];
       interpreter->tensor (tensor_idx)->allocation_type = kTfLiteDynamic;
     }
+
+#ifdef ENABLE_NCORE
+    ncore_delegate = tflite::tflite_plugin_create_delegate(NULL, NULL, 0);
+    set_interpreter(ncore_delegate, interpreter.get());
+    interpreter->ModifyGraphWithDelegate(ncore_delegate);
+#endif
 
     if (interpreter->AllocateTensors () != kTfLiteOk) {
       g_critical ("Failed to allocate tensors\n");

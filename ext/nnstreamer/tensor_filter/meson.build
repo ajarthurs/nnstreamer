@@ -40,6 +40,9 @@ if get_option('enable-tensorflow-lite')
   endforeach
 
   nnstreamer_filter_tflite_deps = [tflite_dep, thread_dep, libdl_dep, glib_dep, gst_dep, nnstreamer_dep]
+  if get_option('enable-ncore') and ncore_dep.found()
+    nnstreamer_filter_tflite_deps += [ncore_dep]
+  endif
 
   if get_option('enable-nnfw')
     nnapi_lib = dependency('nnfw', required: true)

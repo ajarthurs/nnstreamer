@@ -36,6 +36,9 @@
 #ifdef ENABLE_NNFW
 #include "tflite/ext/nnapi_delegate.h"
 #endif
+#ifdef ENABLE_NCORE
+#include <ncore_py_delegate.h>
+#endif
 
 /**
  * @brief	ring cache structure
@@ -60,6 +63,10 @@ private:
   const char *model_path;
   bool use_nnapi;
   nnapi_hw accel;
+
+#ifdef ENABLE_NCORE
+  TfLiteDelegate *ncore_delegate;
+#endif
 
   GstTensorsInfo inputTensorMeta;  /**< The tensor info of input tensors */
   GstTensorsInfo outputTensorMeta;  /**< The tensor info of output tensors */

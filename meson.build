@@ -228,6 +228,11 @@ if get_option('enable-nnfw')
   add_project_arguments('-DENABLE_NNFW=1', language: ['c', 'cpp'])
 endif
 
+if get_option('enable-ncore')
+  add_project_arguments('-DENABLE_NCORE=1', language: ['c', 'cpp'])
+  ncore_dep = dependency('ncore', required: true)
+endif
+
 # Patch for non-tizen build
 patch_file = join_paths(meson.current_source_dir(), 'packaging', 'non_tizen_build.patch')
 if (not get_option('enable-tizen')) and get_option('enable-capi')
