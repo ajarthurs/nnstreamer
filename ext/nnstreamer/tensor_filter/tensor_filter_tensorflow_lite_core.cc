@@ -130,6 +130,7 @@ TFLiteCore::loadModel ()
     }
     /* If got any trouble at model, active below code. It'll be help to analyze. */
     /* model->error_reporter (); */
+    model->error_reporter ();
 
     tflite::ops::builtin::BuiltinOpResolver resolver;
     tflite::InterpreterBuilder (*model, resolver) (&interpreter);
