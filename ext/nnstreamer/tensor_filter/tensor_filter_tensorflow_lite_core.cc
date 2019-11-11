@@ -168,16 +168,16 @@ TFLiteCore::loadModel ()
       interpreter->tensor (tensor_idx)->allocation_type = kTfLiteArenaRw;
     }
 
+    if (interpreter->AllocateTensors () != kTfLiteOk) {
+      g_critical ("Failed to allocate tensors\n");
+      return -2;
+    }
+
 #ifdef ENABLE_NCORE
     ncore_delegate = tflite::tflite_plugin_create_delegate(NULL, NULL, 0);
     set_interpreter(ncore_delegate, interpreter.get());
     interpreter->ModifyGraphWithDelegate(ncore_delegate);
 #endif
-
-    if (interpreter->AllocateTensors () != kTfLiteOk) {
-      g_critical ("Failed to allocate tensors\n");
-      return -2;
-    }
   }
 #if (DBG)
   gint64 stop_time = g_get_real_time ();
