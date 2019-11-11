@@ -159,13 +159,13 @@ TFLiteCore::loadModel ()
     int tensorSize = interpreter->inputs ().size ();
     for (int i = 0; i < tensorSize; ++i) {
       tensor_idx = interpreter->inputs ()[i];
-      interpreter->tensor (tensor_idx)->allocation_type = kTfLiteDynamic;
+      interpreter->tensor (tensor_idx)->allocation_type = kTfLiteArenaRw;
     }
 
     tensorSize = interpreter->outputs ().size ();
     for (int i = 0; i < tensorSize; ++i) {
       tensor_idx = interpreter->outputs ()[i];
-      interpreter->tensor (tensor_idx)->allocation_type = kTfLiteDynamic;
+      interpreter->tensor (tensor_idx)->allocation_type = kTfLiteArenaRw;
     }
 
 #ifdef ENABLE_NCORE
