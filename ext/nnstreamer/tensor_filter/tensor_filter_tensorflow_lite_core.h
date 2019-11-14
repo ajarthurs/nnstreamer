@@ -30,8 +30,8 @@
 #ifdef __cplusplus
 #include <iostream>
 
-#include <tensorflow/contrib/lite/model.h>
-#include <tensorflow/contrib/lite/kernels/register.h>
+#include <tensorflow/lite/model.h>
+#include <tensorflow/lite/kernels/register.h>
 
 #ifdef ENABLE_NNFW
 #include "tflite/ext/nnapi_delegate.h"
