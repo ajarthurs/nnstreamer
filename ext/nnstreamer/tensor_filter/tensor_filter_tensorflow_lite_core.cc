@@ -119,7 +119,7 @@ static inline void SetBuffersPersistent(tflite::Interpreter *interpreter) {
   int t_size = interpreter->tensors_size();
   for (int i = 0; i < t_size; i++) {
     if (interpreter->tensor(i)->name) {
-      // If its a constant as kTfLiteMmapRo, leave it -- otherwise change to kTfLiteArenaRwPersistent.
+      // If its a constant such as kTfLiteMmapRo, leave it -- otherwise change to kTfLiteArenaRwPersistent.
       if (interpreter->tensor(i)->allocation_type != kTfLiteMmapRo)
         interpreter->tensor(i)->allocation_type = kTfLiteArenaRwPersistent;
     }
@@ -174,21 +174,6 @@ TFLiteCore::loadModel ()
 #endif
     if (use_nnapi)
       g_info ("interpreter->UseNNAPI(%s)", nnapi_hw_string[accel]);
-
-    /** set allocation type to dynamic for in/out tensors */
-    //int tensor_idx;
-
-    //int tensorSize = interpreter->inputs ().size ();
-    //for (int i = 0; i < tensorSize; ++i) {
-    //  tensor_idx = interpreter->inputs ()[i];
-    //  interpreter->tensor (tensor_idx)->allocation_type = kTfLiteMmapRo;
-    //}
-
-    //tensorSize = interpreter->outputs ().size ();
-    //for (int i = 0; i < tensorSize; ++i) {
-    //  tensor_idx = interpreter->outputs ()[i];
-    //  interpreter->tensor (tensor_idx)->allocation_type = kTfLiteMmapRo;
-    //}
 
     SetBuffersPersistent(interpreter.get());
     int input = interpreter->inputs()[0];
