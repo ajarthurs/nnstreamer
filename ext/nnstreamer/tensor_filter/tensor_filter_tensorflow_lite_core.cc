@@ -45,6 +45,10 @@
 TFLiteCore::TFLiteCore (const char * _model_path, nnapi_hw hw)
 {
   model_path = _model_path;
+#ifdef ENABLE_NCORE
+  enable_ncore = FALSE;
+  ncore_delegate = nullptr;
+#endif
   if(hw == NNAPI_UNKNOWN){
     use_nnapi = nnsconf_get_custom_value_bool ("tensorflowlite", "enable_nnapi", FALSE);
   } else {
@@ -63,7 +67,11 @@ TFLiteCore::TFLiteCore (const char * _model_path, nnapi_hw hw)
 TFLiteCore::~TFLiteCore ()
 {
 #ifdef ENABLE_NCORE
-  tflite::tflite_plugin_destroy_delegate(ncore_delegate);
+  if(enable_ncore) {
+    tflite::tflite_plugin_destroy_delegate(ncore_delegate);
+    ncore_delegate = nullptr;
+    GST_LOG("Destroyed NCORE Delegate");
+  }
 #endif
   gst_tensors_info_free (&inputTensorMeta);
   gst_tensors_info_free (&outputTensorMeta);
@@ -79,6 +87,9 @@ TFLiteCore::~TFLiteCore ()
 int
 TFLiteCore::init ()
 {
+#ifdef ENABLE_NCORE
+  enable_ncore = (getenv("ENABLE_NCORE") != NULL);
+#endif
   if (loadModel ()) {
     g_critical ("Failed to load model\n");
     return -1;
@@ -189,9 +200,11 @@ TFLiteCore::loadModel ()
     }
 
 #ifdef ENABLE_NCORE
-    ncore_delegate = tflite::tflite_plugin_create_delegate(NULL, NULL, 0);
-    set_interpreter(ncore_delegate, interpreter.get());
-    interpreter->ModifyGraphWithDelegate(ncore_delegate);
+    if(enable_ncore) {
+      ncore_delegate = tflite::tflite_plugin_create_delegate(nullptr, nullptr, 0);
+      set_interpreter(ncore_delegate, interpreter.get());
+      interpreter->ModifyGraphWithDelegate(ncore_delegate);
+    }
 #endif
   }
 #if (DBG)

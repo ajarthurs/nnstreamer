@@ -65,6 +65,7 @@ private:
   nnapi_hw accel;
 
 #ifdef ENABLE_NCORE
+  gboolean enable_ncore;
   TfLiteDelegate *ncore_delegate;
 #endif
 
