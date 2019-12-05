@@ -70,7 +70,7 @@ TFLiteCore::~TFLiteCore ()
   if(enable_ncore) {
     tflite::tflite_plugin_destroy_delegate(ncore_delegate);
     ncore_delegate = nullptr;
-    GST_LOG("Destroyed NCORE Delegate");
+    GST_INFO("Destroyed NCORE Delegate");
   }
 #endif
   gst_tensors_info_free (&inputTensorMeta);
@@ -189,6 +189,7 @@ TFLiteCore::loadModel ()
       ncore_delegate = tflite::tflite_plugin_create_delegate(nullptr, nullptr, 0);
       set_interpreter(ncore_delegate, interpreter.get());
       interpreter->ModifyGraphWithDelegate(ncore_delegate);
+      GST_INFO("Activated NCORE Delegate");
     }
 #endif
   }
